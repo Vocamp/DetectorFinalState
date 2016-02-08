@@ -1,0 +1,349 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix : <http://purl.org/net/detectorfinalstate/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix cpannotationschema: <http://www.ontologydesignpatterns.org/schemas/cpannotationschema.owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://purl.org/net/detectorfinalstate/>
+    cpannotationschema:coversRequirements "Retrieve all analyses requireing particles to have an invariant mass near the Z pole.", "Retrieve all analyses requiring large missing energy.", "Retrieve all analyses that used jets in the final state.", "Retrieve all analyses that veto extra leptons." ;
+    cpannotationschema:hasIntent "This pattern represent schematic model for data obtained from results of high-energy physics experiments, such as ones ran in the CERN's Large Hadron Collider. Specifically, this pattern models the notion of Detector Final State, a composition obatined by a selection of some target characteristics concerning physics measurements and parameters of experiments." ;
+    cpannotationschema:scenarios "Representing detection of final state of a high-energy physics experiment." ;
+    a owl:Ontology ;
+    owl:imports <http://www.ontologydesignpatterns.org/schemas/cpannotationschema.owl> .
+
+:And
+    a owl:Class ;
+    rdfs:label "And" ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:allValuesFrom [
+            a owl:Class ;
+            owl:unionOf (:And
+                :Or
+                :SelectionCriteria
+            )
+        ] ;
+        owl:onProperty :hasOperand
+    ], [
+        a owl:Restriction ;
+        owl:onProperty :hasOperand ;
+        owl:someValuesFrom [
+            a owl:Class ;
+            owl:unionOf (:And
+                :Or
+                :SelectionCriteria
+            )
+        ]
+    ] .
+
+:BaseDefinition
+    a owl:Class ;
+    rdfs:label "BaseDefinition" .
+
+:BinaryRelation
+    a owl:Class ;
+    rdfs:label "BaseRelation" .
+
+:DetectorFinalState
+    a owl:Class ;
+    rdfs:label "DetectorFinalState" ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty :hasSelectionCriteria ;
+        owl:someValuesFrom [
+            a owl:Class ;
+            owl:unionOf (:And
+                :Or
+                :SelectionCriteria
+            )
+        ]
+    ], [
+        a owl:Restriction ;
+        owl:allValuesFrom :FinalStateObject ;
+        owl:onProperty :refersToObject
+    ], [
+        a owl:Restriction ;
+        owl:onProperty :refersToObject ;
+        owl:someValuesFrom :FinalStateObject
+    ], [
+        a owl:Restriction ;
+        owl:allValuesFrom [
+            a owl:Class ;
+            owl:unionOf (:And
+                :Or
+                :SelectionCriteria
+            )
+        ] ;
+        owl:onProperty :vetoesSelectionCriteria
+    ], [
+        a owl:Restriction ;
+        owl:allValuesFrom [
+            a owl:Class ;
+            owl:unionOf (:And
+                :Or
+                :SelectionCriteria
+            )
+        ] ;
+        owl:onProperty :hasSelectionCriteria
+    ] .
+
+:EventLevelQuantity
+    a owl:Class ;
+    rdfs:label "EventLevelQuantity" ;
+    rdfs:subClassOf :FinalStateObject ;
+    owl:disjointWith :PhysicsObject .
+
+:FinalStateObject
+    a owl:Class ;
+    rdfs:label "FinalStateObject" ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:allValuesFrom :BaseDefinition ;
+        owl:onProperty :hasBaseDefinition
+    ], [
+        a owl:Class ;
+        owl:unionOf (:EventLevelQuantity
+            :PhysicsObject
+        )
+    ] .
+
+:Number
+    a owl:Class ;
+    rdfs:label "Number" .
+
+:NumericalValue
+    a owl:Class ;
+    rdfs:label "NumericalValue" ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:allValuesFrom :Number ;
+        owl:onProperty :hasNumber
+    ], [
+        a owl:Restriction ;
+        owl:allValuesFrom :Unit ;
+        owl:onProperty :hasUnit
+    ] .
+
+:Or
+    a owl:Class ;
+    rdfs:label "Or" ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:allValuesFrom [
+            a owl:Class ;
+            owl:unionOf (:And
+                :Or
+                :SelectionCriteria
+            )
+        ] ;
+        owl:onProperty :hasOperand
+    ], [
+        a owl:Restriction ;
+        owl:onProperty :hasOperand ;
+        owl:someValuesFrom [
+            a owl:Class ;
+            owl:unionOf (:And
+                :Or
+                :SelectionCriteria
+            )
+        ]
+    ] .
+
+:PhysicalQuantity
+    a owl:Class ;
+    rdfs:label "PhysicalQuantity" ;
+    rdfs:subClassOf :PhysicalValue, [
+        a owl:Restriction ;
+        owl:allValuesFrom :FinalStateObject ;
+        owl:onProperty :refersToObject
+    ] .
+
+:PhysicalValue
+    a owl:Class ;
+    rdfs:label "PhysicalValue" ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:allValuesFrom :NumericalValue ;
+        owl:onProperty :hasNumericalValue
+    ] .
+
+:PhysicsObject
+    a owl:Class ;
+    rdfs:label "PhysicsObject" ;
+    rdfs:subClassOf :FinalStateObject .
+
+:SelectionCriteria
+    a owl:Class ;
+    rdfs:label "SelectionCriteria" ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:allValuesFrom :PhysicalQuantity ;
+        owl:onProperty :hasSecondArgument
+    ], [
+        a owl:Restriction ;
+        owl:allValuesFrom :BinaryRelation ;
+        owl:onProperty :usesBinaryRelation
+    ], [
+        a owl:Restriction ;
+        owl:allValuesFrom :SelectionCriteria ;
+        owl:onProperty :hasFirstArgument
+    ] .
+
+:Unit
+    a owl:Class ;
+    rdfs:label "Unit" .
+
+:hasBaseDefinition
+    a owl:ObjectProperty ;
+    rdfs:label "hasBaseDefinition" .
+
+:hasFirstArgument
+    a owl:ObjectProperty ;
+    rdfs:label "hasFirstArgument" .
+
+:hasNumber
+    a owl:ObjectProperty ;
+    rdfs:label "hasNumber" .
+
+:hasNumericalValue
+    a owl:ObjectProperty ;
+    rdfs:label "hasNumericalValue" .
+
+:hasOperand
+    a owl:ObjectProperty ;
+    rdfs:label "hasOperand" .
+
+:hasSecondArgument
+    a owl:ObjectProperty ;
+    rdfs:label "hasSecondArgument" .
+
+:hasSelectionCriteria
+    a owl:ObjectProperty ;
+    rdfs:label "hasSelectionCriteria" .
+
+:hasUnit
+    a owl:ObjectProperty ;
+    rdfs:label "hasUnit" .
+
+:refersToObject
+    a owl:ObjectProperty ;
+    rdfs:label "refersToObject" .
+
+:usesBinaryRelation
+    a owl:ObjectProperty ;
+    rdfs:label "usesBinaryRelation" .
+
+:vetoesSelectionCriteria
+    a owl:ObjectProperty ;
+    rdfs:label "vetoesSelectionCriteria" .
+
+[]
+    a owl:Restriction ;
+    rdfs:subClassOf :DetectorFinalState ;
+    owl:onProperty :vetoesSelectionCriteria ;
+    owl:someValuesFrom [
+        a owl:Class ;
+        owl:unionOf (:And
+            :Or
+            :SelectionCriteria
+        )
+    ] .
+
+[]
+    a owl:Restriction ;
+    rdfs:subClassOf :NumericalValue ;
+    owl:onProperty :hasUnit ;
+    owl:someValuesFrom :Unit .
+
+[]
+    a owl:Restriction ;
+    rdfs:subClassOf [
+        a owl:Class ;
+        owl:unionOf (:And
+            :Or
+        )
+    ] ;
+    owl:onProperty :hasOperand ;
+    owl:someValuesFrom [
+        a owl:Class ;
+        owl:unionOf (:And
+            :Or
+            :SelectionCriteria
+        )
+    ] .
+
+[]
+    a owl:Restriction ;
+    rdfs:subClassOf :DetectorFinalState ;
+    owl:onProperty :hasSelectionCriteria ;
+    owl:someValuesFrom [
+        a owl:Class ;
+        owl:unionOf (:And
+            :Or
+            :SelectionCriteria
+        )
+    ] .
+
+[]
+    a owl:Restriction ;
+    rdfs:subClassOf :PhysicalValue ;
+    owl:onProperty :hasNumericalValue ;
+    owl:someValuesFrom :NumericalValue .
+
+[]
+    a owl:Restriction ;
+    rdfs:subClassOf :SelectionCriteria ;
+    owl:onProperty :hasSecondArgument ;
+    owl:someValuesFrom :PhysicalQuantity .
+
+[]
+    a owl:Restriction ;
+    rdfs:subClassOf :SelectionCriteria ;
+    owl:onProperty :hasFirstArgument ;
+    owl:someValuesFrom :PhysicalValue .
+
+[]
+    a owl:Restriction ;
+    rdfs:subClassOf :SelectionCriteria ;
+    owl:onProperty :usesBinaryRelation ;
+    owl:someValuesFrom :BinaryRelation .
+
+[]
+    a owl:Restriction ;
+    rdfs:subClassOf :NumericalValue ;
+    owl:onProperty :hasNumber ;
+    owl:someValuesFrom :Number .
+
+[]
+    a owl:AllDisjointClasses ;
+    owl:members (:And
+        :BaseDefinition
+        :BinaryRelation
+        :DetectorFinalState
+        :FinalStateObject
+        :Number
+        :NumericalValue
+        :Or
+        :PhysicalValue
+        :SelectionCriteria
+        :Unit
+    ) .
+
+[]
+    a owl:Restriction ;
+    rdfs:subClassOf :FinalStateObject ;
+    owl:allValuesFrom :BaseDefinition ;
+    owl:onProperty :hasBaseDefinition .
+
+[]
+    a owl:Restriction ;
+    rdfs:subClassOf [
+        a owl:Class ;
+        owl:unionOf (:DetectorFinalState
+            :PhysicalQuantity
+        )
+    ] ;
+    owl:onProperty :refersToObject ;
+    owl:someValuesFrom :FinalStateObject .
+
